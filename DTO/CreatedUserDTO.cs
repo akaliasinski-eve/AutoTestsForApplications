@@ -12,5 +12,4 @@ public class CreatedUserDTO
     public string Job { get; set; }
     [JsonPropertyName("createdAt")]
     public string CreatedAt { get; set; }
-    //sxasxasx
 }

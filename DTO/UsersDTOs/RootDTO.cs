@@ -2,6 +2,6 @@
 
 namespace AutoTestsForApplications.DTO.UsersDTOs;
 
-public record Root(
+public record RootDTO(
     [property: JsonPropertyName("data")] IReadOnlyList<UserDTO> Data
 );

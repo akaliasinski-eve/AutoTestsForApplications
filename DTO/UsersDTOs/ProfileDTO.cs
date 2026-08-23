@@ -2,9 +2,9 @@
 
 namespace AutoTestsForApplications.DTO.UsersDTOs;
 
-public record Profile(
+public record ProfileDTO(
     [property: JsonPropertyName("fullName")] string FullName,
     [property: JsonPropertyName("age")] int Age,
-    [property: JsonPropertyName("address")] Address Address,
+    [property: JsonPropertyName("address")] AddressDTO Address,
     [property: JsonPropertyName("tags")] IReadOnlyList<string> Tags
 );

@@ -24,7 +24,6 @@ public class OrderTests
         {
             TestContext.WriteLine($"{item.ProductId} | {item.Quantity} | {item.Price}");
         }
-
         order.Items.Should().NotBeEmpty();
         order.Items.Should().HaveCount(3);
     }

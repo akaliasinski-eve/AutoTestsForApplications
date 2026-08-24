@@ -60,13 +60,6 @@ public class OrderTests
     {
         ItemDTO? mostExpensiveItem;
         mostExpensiveItem = order.Items.OrderByDescending(x => x.Price).First();
-        /*      using (new AssertionScope())
-              {
-                  mostExpensiveItem.Price.Should().Be(129.99m);
-                  mostExpensiveItem.Name.Should().Be("Wireless Headphones1");
-              }
-        */
-        //mostExpensiveItem.Price.Should().Be(129.99m).And.mostExpensiveItem.Name.Should().Be("Wireless Headphones1");
         
         //исполюзуются анонимные типы
         mostExpensiveItem.Should().BeEquivalentTo(new 

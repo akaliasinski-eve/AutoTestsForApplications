@@ -1,5 +1,4 @@
 ﻿using AutoTestsForApplications.Interfaces.DapperInterfaces;
-using AutoTestsForApplications.Interfaces.EmailSenderInterface;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 using FluentAssertions;

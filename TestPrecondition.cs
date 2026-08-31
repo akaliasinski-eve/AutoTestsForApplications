@@ -9,7 +9,6 @@ public class TestPrecondition
     public TestPrecondition()
     {
         var services = new ServiceCollection();
-        
         var dbPath = Path.Combine(AppContext.BaseDirectory, "marketplace.db");
         var connString = $"Data Source={dbPath}";
         services.AddDataAccess(connString);

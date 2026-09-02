@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using AutoTestsForApplications.DTO.OrderDTOs;
 using FluentAssertions;
-using FluentAssertions.Execution;
 
 namespace AutoTestsForApplications;
 

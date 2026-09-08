@@ -5,4 +5,5 @@ namespace AutoTestsForApplications.Interfaces.DapperInterfaces;
 public interface ICategoryRepository
 {
     Task<IEnumerable<CategoryDTO>> GetAllCategoriesAsync();
+    Task<CategoryDTO> GetCategoryByNameAsync(string categoryName);
 }

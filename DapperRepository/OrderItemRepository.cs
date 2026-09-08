@@ -27,4 +27,11 @@ public class OrderItemRepository : IOrderItemRepository
         var orderItems = await db.QueryAsync<OrderItemDTO>("SELECT * FROM OrderItems WHERE OrderId = @orderId", new { orderId });
         return orderItems;
     }
+    
+    public async Task<IEnumerable<OrderItemDTO>> GetOrderItemsByProductIdAsync(int productId)
+    {
+        using var db = new SqliteConnection(connectionString);
+        var orderItems = await db.QueryAsync<OrderItemDTO>("SELECT * FROM OrderItems WHERE ProductId = @productId", new { productId });
+        return orderItems;
+    }
 }

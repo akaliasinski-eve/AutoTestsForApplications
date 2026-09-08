@@ -27,4 +27,12 @@ public class OrderRepository : IOrderRepository
         var order = await db.QueryFirstOrDefaultAsync<OrderDTO>("SELECT * FROM Orders where Id = @id", new { id });
         return order;
     }
+    
+    public async Task<IEnumerable<OrderDTO>> GetOrdersByUserIdAsync(int userId)
+    {
+        using var db = new SqliteConnection(connectionString);
+        var orders = await db.QueryAsync<OrderDTO>("SELECT * FROM Orders where Id = @userId", 
+            new { userId });
+        return orders;
+    }
 }

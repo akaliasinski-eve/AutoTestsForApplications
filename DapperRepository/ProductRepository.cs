@@ -27,4 +27,12 @@ public class ProductRepository : IProductRepository
         var product = await db.QueryFirstOrDefaultAsync<ProductDTO>("SELECT * FROM Products where Id = @id", new { id });
         return product;
     }
+    
+    public async Task<IEnumerable<ProductDTO>> GetProductsByCategoryId(int categoryId)
+    {
+        using var db = new SqliteConnection(connectionString);
+        var products = await db.QueryAsync<ProductDTO>("SELECT * FROM Products where CategoryId = @categoryId", 
+            new { categoryId });
+        return products;
+    }
 }

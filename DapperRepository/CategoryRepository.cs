@@ -20,4 +20,12 @@ public class CategoryRepository : ICategoryRepository
         var categories = await db.QueryAsync<CategoryDTO>("SELECT * FROM Categories");
         return categories;
     }
+    
+    public async Task<CategoryDTO> GetCategoryByNameAsync(string categoryName)
+    {
+        using var db = new SqliteConnection(connectionString);
+        var category = await db.QueryFirstOrDefaultAsync<CategoryDTO>("SELECT * FROM Categories  WHERE Name = @categoryName", 
+            new { categoryName });
+        return category;
+    }
 }

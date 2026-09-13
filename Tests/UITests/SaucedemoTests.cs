@@ -16,6 +16,7 @@ public class SaucedemoTests : BaseTest
         var loginButton = Page.GetByRole(AriaRole.Button, new() { Name = "Login" });
         await loginButton.ClickAsync();
         var productsLabel = Page.Locator("//span[text()='Products']");
-        await productsLabel.IsVisibleAsync();
+        var isLabelVisible =  await productsLabel.IsVisibleAsync();
+        isLabelVisible.Should().BeTrue();
     }
 }

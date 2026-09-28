@@ -75,4 +75,15 @@ public class HerokuTests : BaseTest
         await addRemovePage.ClickButtonByNameAndIndexAsync("Delete", 2);
         await addRemovePage.CheckNumberofButtonsAsync("Delete", 1);
     }
+
+    [Test]
+    public async Task LeftFrameTest()
+    {
+        FramesPage framesPage = new FramesPage(Page);
+        await framesPage.OpenFramesPageAsync();
+        await framesPage.ClickNestedFramesLinkAsync();
+        NestedFramesPage nestedFramesPage = new NestedFramesPage(Page);
+        var leftText = await nestedFramesPage.GetTextFromLeftFrameAsync();
+        leftText.Should().Contain("LEFT");
+    }
 }

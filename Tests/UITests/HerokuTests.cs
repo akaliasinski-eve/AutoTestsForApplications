@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoTestsForApplications.ForUI.Pages.Heroku;
+using FluentAssertions;
 using Microsoft.Playwright;
 
 namespace AutoTestsForApplications.UITests;
@@ -17,19 +18,61 @@ public class HerokuTests : BaseTest
     [Test]
     public async Task FormAuthentication()
     {
-        await Page.GotoAsync("https://the-internet.herokuapp.com/login");
-        var loginTextBox = Page.GetByRole(AriaRole.Textbox, new() { Name = "Username"});
-        var passTextBox = Page.GetByRole(AriaRole.Textbox, new() { Name = "Password"});
-        await loginTextBox.FillAsync("wrong");
-        await passTextBox.FillAsync("wrong");
-        var loginButton = Page.GetByRole(AriaRole.Button, new() { Name = "Login"});
-        await loginButton.ClickAsync();
-        var errorMessage = Page.Locator("//div[contains(text(),'Your username is invalid!')]");
-        var state = await errorMessage.IsVisibleAsync();
-        state.Should().BeTrue();
-        var errorMessage2 = await Page.QuerySelectorAsync("#flash");
-        var textTextErrorMessage = await errorMessage2.InnerTextAsync();
-        textTextErrorMessage.Should().Contain("Your username is invalid!");
+        LoginPage loginPage = new LoginPage(Page);
+        await loginPage.OpenLoginPageAsync();
+        await loginPage.LoginUser("wrongUsername", "wrongPassword");
+        var errorMessage = await loginPage.GetTextFromErrorMessageLabel();
+        errorMessage.Should().Contain("Your username is invalid!");
     }
-    
+
+    [Test]
+    public async Task DropDown()
+    {
+        await Page.GotoAsync("https://the-internet.herokuapp.com/dropdown");
+        await Assertions.Expect(Page).ToHaveTitleAsync("The Internet");
+        await Assertions.Expect(Page).ToHaveURLAsync("https://the-internet.herokuapp.com/dropdown");
+
+        //стандартный дропдаун
+        var dropdown = Page.Locator("#dropdown");
+        await Assertions.Expect(dropdown).ToBeVisibleAsync();
+        await dropdown.SelectOptionAsync("1");
+        await Assertions.Expect(dropdown).ToHaveValueAsync("1");
+        var selected1 = dropdown.Locator("option:checked");
+        await Assertions.Expect(selected1).ToHaveTextAsync("Option 1");
+        var text = await dropdown.InnerTextAsync();
+        text.Should().Contain("Option 1");
+
+        await dropdown.SelectOptionAsync("2");
+        await Assertions.Expect(dropdown).ToHaveValueAsync("2");
+        var selected2 = dropdown.Locator("option:checked");
+        await Assertions.Expect(selected1).ToHaveTextAsync("Option 2");
+        var text2 = await dropdown.InnerTextAsync();
+        text2.Should().Contain("Option 2");
+
+        var opt1 = Page.Locator("//option[@selected='selected']");
+        await Assertions.Expect(opt1).ToHaveTextAsync("Option 2");
+
+        //нестандартный дропдаун
+        await dropdown.ClickAsync();
+        var option2 = Page.Locator("//option[text()='Option 2']");
+        await option2.ClickAsync();
+        var textFromDropdown = await option2.InnerTextAsync();
+        textFromDropdown.Should().Be("Option 2");
+    }
+
+    [Test]
+    public async Task AddRemoveElements()
+    {
+        AddRemovePage addRemovePage = new AddRemovePage(Page);
+        await addRemovePage.OpenAddRemovePageAsync();
+        await addRemovePage.CheckPageOpenAsync();
+
+        await addRemovePage.ClickButtonByNameAsync("Add element");
+        await addRemovePage.CheckNumberofButtonsAsync("Delete", 1);
+        await addRemovePage.ClickButtonByNameAsync("Add element");
+        await addRemovePage.CheckNumberofButtonsAsync("Delete", 2);
+
+        await addRemovePage.ClickButtonByNameAndIndexAsync("Delete", 2);
+        await addRemovePage.CheckNumberofButtonsAsync("Delete", 1);
+    }
 }

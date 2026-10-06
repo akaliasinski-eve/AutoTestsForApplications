@@ -1,6 +1,7 @@
 ﻿using AutoTestsForApplications.ForUI.Pages.Heroku;
 using FluentAssertions;
 using Microsoft.Playwright;
+using SQLitePCL;
 
 namespace AutoTestsForApplications.UITests;
 
@@ -85,5 +86,74 @@ public class HerokuTests : BaseTest
         NestedFramesPage nestedFramesPage = new NestedFramesPage(Page);
         var leftText = await nestedFramesPage.GetTextFromLeftFrameAsync();
         leftText.Should().Contain("LEFT");
+    }
+
+    [Test]
+    public async Task BottomFrameTest()
+    {
+        FramesPage framesPage = new FramesPage(Page);
+        await framesPage.OpenFramesPageAsync();
+        await framesPage.ClickNestedFramesLinkAsync();
+        NestedFramesPage nestedFramesPage = new NestedFramesPage(Page);
+        var leftText = await nestedFramesPage.GetTextFromBottomFrameAsync();
+        leftText.Should().Contain("BOTTOM");
+    }
+
+    [Test]
+    public async Task OpenWindowTest()
+    {
+        //если страница открывается в результате клика с другой страницы
+        WindowsPage windowsPage = new WindowsPage(Page);
+        await windowsPage.OpenMultipleWindowsPageAsync();
+        var newWindow = await windowsPage.OpenNewWindowAsync();
+        await Assertions.Expect(newWindow.Locator("h3")).ToHaveTextAsync("New Window");
+        newWindow.Url.Should().Contain("windows/new");
+        //просто открыть страницу
+        var context = Page.Context;
+        var newPage = await context.NewPageAsync();
+        newPage.GotoAsync("https://the-internet.herokuapp.com/frames");
+    }
+
+    [Test]
+    public async Task JsAlertTest()
+    {
+        JavaScriptAlertsPage javaScriptAlertsPage = new JavaScriptAlertsPage(Page);
+        await javaScriptAlertsPage.OpenAlertsPageAsync();
+
+        IDialog actualDialog = null;
+        //подписываемся на событие появления алерта
+        Page.Dialog += async (_, dialog) =>
+        {
+            actualDialog = dialog;
+            await actualDialog.AcceptAsync();
+        };
+
+        await javaScriptAlertsPage.ClickJsAlertButtonAsync();
+        actualDialog.Type.Should().Be("alert");
+        actualDialog.Message.Should().Be("I am a JS Alert");
+        var resultText = await javaScriptAlertsPage.GetResultTextAsync();
+        resultText.Should().Be("You successfully clicked an alert");
+    }
+    
+    [Test]
+    public async Task JsPromptTest()
+    {
+        JavaScriptAlertsPage javaScriptAlertsPage = new JavaScriptAlertsPage(Page);
+        await javaScriptAlertsPage.OpenAlertsPageAsync();
+
+        IDialog actualDialog = null;
+        string text = "Alert";
+        //подписываемся на событие появления алерта
+        Page.Dialog += async (_, dialog) =>
+        {
+            actualDialog = dialog;
+            await actualDialog.AcceptAsync(text);
+        };
+
+        await javaScriptAlertsPage.ClickJsPromptButtonAsync();
+        actualDialog.Type.Should().Be("prompt");
+        actualDialog.Message.Should().Be("I am a JS prompt");
+        var resultText = await javaScriptAlertsPage.GetResultTextAsync();
+        resultText.Should().Be("You entered: Alert");
     }
 }

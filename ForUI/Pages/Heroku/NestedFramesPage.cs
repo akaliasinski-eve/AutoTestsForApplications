@@ -8,6 +8,7 @@ public class NestedFramesPage
 
     private ILocator LeftFrame => Page.FrameLocator("frame[name='frame-top']")
         .FrameLocator("frame[name='frame-left']").Locator("body");
+    private ILocator BottomFrame => Page.FrameLocator("frame[name='frame-bottom']").Locator("body");
     
     public  NestedFramesPage(IPage page)
     {
@@ -17,5 +18,10 @@ public class NestedFramesPage
     public async Task<string> GetTextFromLeftFrameAsync()
     {
         return await LeftFrame.InnerTextAsync();
+    }
+    
+    public async Task<string> GetTextFromBottomFrameAsync()
+    {
+        return await BottomFrame.InnerTextAsync();
     }
 }

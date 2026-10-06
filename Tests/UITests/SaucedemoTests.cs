@@ -1,4 +1,5 @@
-﻿using AutoTestsForApplications.ForUI.Pages.SauceDemo;
+﻿using AutoTestsForApplications.DataProvider;
+using AutoTestsForApplications.ForUI.Pages.SauceDemo;
 using FluentAssertions;
 using Microsoft.Playwright;
 
@@ -48,5 +49,16 @@ public class SaucedemoTests : BaseTest
         await checkoutOverviewPage.ClickFinishButtonAsync();
         CheckoutCompletePage checkoutCompletePage = new CheckoutCompletePage(Page);
         await checkoutCompletePage.CheckThankYouPhraseIsDisplayedAsync();
+    }
+
+    [TestCaseSource(typeof(TestCredentialsDataProvider),
+        nameof(TestCredentialsDataProvider.GetCredentialsCases))] //параметризованный тест
+    public async Task CredentialsValidatorTest(string login, string password)
+    {
+        LoginPageSD loginPageSd = new LoginPageSD(Page);
+        await loginPageSd.OpenLoginPageAsync();
+        await loginPageSd.LoginUserAsync(login, password);
+        ProductsPage productsPage = new ProductsPage(Page);
+        await productsPage.CheckProductsPageIsOpenAsync();
     }
 }
